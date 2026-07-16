@@ -3,6 +3,7 @@ package com.example.simpletodolistapplication.service;
 import com.example.simpletodolistapplication.model.Task;
 import com.example.simpletodolistapplication.model.Status;
 import com.example.simpletodolistapplication.model.Category;
+import org.springframework.web.client.RestTemplate;
 import com.example.simpletodolistapplication.repository.TaskRepository;
 import com.example.simpletodolistapplication.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
+import com.example.simpletodolistapplication.dto.JsonPlaceholderTodo;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Service
 @Transactional
@@ -20,6 +25,9 @@ public class TaskService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
@@ -99,5 +107,43 @@ public class TaskService {
 
         task.setCategory(category);
         return taskRepository.save(task);
+    }
+
+    public List<Task> importTasks() {
+
+        String url = "https://jsonplaceholder.typicode.com/todos?_limit=5";
+
+        JsonPlaceholderTodo[] todos =
+                restTemplate.getForObject(url, JsonPlaceholderTodo[].class);
+
+        Category category = categoryRepository.findById(2L)
+                .orElseThrow(() ->
+                        new RuntimeException("Category with the specified id not found"));
+
+        List<Task> tasks = new ArrayList<>();
+
+        for (JsonPlaceholderTodo todo : todos) {
+
+            Task task = new Task();
+
+            task.setTitle(todo.getTitle());
+            task.setDescription(" JSONPlaceholder Todos");
+
+            task.setPriority(2);
+
+            task.setStatus(
+                    todo.isCompleted()
+                            ? Status.COMPLETED
+                            : Status.PENDING
+            );
+
+            task.setDueDate(LocalDateTime.now().plusDays(7));
+
+            task.setCategory(category);
+
+            tasks.add(task);
+        }
+
+        return taskRepository.saveAll(tasks);
     }
 }

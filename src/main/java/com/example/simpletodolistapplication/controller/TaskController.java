@@ -73,6 +73,14 @@ public class TaskController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
         }
+
+    }
+
+    @PostMapping("/import")
+    public ResponseEntity<List<Task>> importTasks() {
+
+        return ResponseEntity.ok(taskService.importTasks());
+
     }
 
     @PutMapping("/{id}")
@@ -133,7 +141,7 @@ public class TaskController {
                                                   @RequestParam(required = false) Status status,
                                                   @RequestParam(required = false) Long categoryId) {
         if (title != null) {
-            // Add search by title logic if needed
+
             return ResponseEntity.ok(taskService.getAllTasks());
         } else if (status != null && categoryId != null) {
             return ResponseEntity.ok(taskService.getTasksByCategoryAndStatus(categoryId, status));

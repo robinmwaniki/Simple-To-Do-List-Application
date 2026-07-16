@@ -61,8 +61,7 @@ public class UserService {
 
         userAssembler.updateEntity(existingUser, registrationDTO);
 
-        // The assembler copies the raw password onto the entity only when one was supplied.
-        // Re-encode it here before persisting; otherwise the existing hash is left untouched.
+
         if (registrationDTO.getPassword() != null && !registrationDTO.getPassword().isBlank()) {
             existingUser.setPassword(passwordEncoder.encode(registrationDTO.getPassword()));
         }
@@ -78,10 +77,7 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    /**
-     * Verifies an email/password combination.
-     * Returns the matching UserDTO if the credentials are valid, otherwise empty.
-     */
+
     public Optional<UserDTO> authenticate(String email, String rawPassword) {
         return userRepository.findByEmail(email)
                 .filter(user -> passwordEncoder.matches(rawPassword, user.getPassword()))

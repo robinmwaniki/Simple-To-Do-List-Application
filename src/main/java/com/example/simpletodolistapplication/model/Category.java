@@ -35,7 +35,7 @@ public class Category {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @JsonIgnore  // ← Add this to break the circular reference
+    @JsonIgnore
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Task> tasks = new ArrayList<>();
 
