@@ -153,4 +153,14 @@ public class TaskController {
             return ResponseEntity.ok(taskService.getAllTasks());
         }
     }
+    @PostMapping("/import-restclient")
+    public ResponseEntity<List<Task>> importTasksUsingRestClient() {
+
+        return ResponseEntity.ok(
+                taskService.importTasksUsingRestClient()
+        );
+    }
+
+
+
 }

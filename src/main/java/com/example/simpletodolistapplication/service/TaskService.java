@@ -3,6 +3,7 @@ package com.example.simpletodolistapplication.service;
 import com.example.simpletodolistapplication.model.Task;
 import com.example.simpletodolistapplication.model.Status;
 import com.example.simpletodolistapplication.model.Category;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestTemplate;
 import com.example.simpletodolistapplication.repository.TaskRepository;
 import com.example.simpletodolistapplication.repository.CategoryRepository;
@@ -28,6 +29,9 @@ public class TaskService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private RestClient restClient;
 
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
@@ -127,9 +131,48 @@ public class TaskService {
             Task task = new Task();
 
             task.setTitle(todo.getTitle());
-            task.setDescription(" JSONPlaceholder Todos");
+            task.setDescription("imported using rest template");
 
             task.setPriority(2);
+
+            task.setStatus(
+                    todo.isCompleted()
+                            ? Status.COMPLETED
+                            : Status.PENDING
+            );
+
+            task.setDueDate(LocalDateTime.now().plusDays(7));
+
+            task.setCategory(category);
+
+            tasks.add(task);
+        }
+
+        return taskRepository.saveAll(tasks);
+    }
+
+    public List<Task> importTasksUsingRestClient() {
+
+        JsonPlaceholderTodo[] todos = restClient
+                .get()
+                .uri("https://jsonplaceholder.typicode.com/todos?_limit=5")
+                .retrieve()
+                .body(JsonPlaceholderTodo[].class);
+
+        Category category = categoryRepository.findById(3L)
+                .orElseThrow(() ->
+                        new RuntimeException("Category with the specified id not found"));
+
+        List<Task> tasks = new ArrayList<>();
+
+        for (JsonPlaceholderTodo todo : todos) {
+
+            Task task = new Task();
+
+            task.setTitle(todo.getTitle());
+            task.setDescription("imported using rest client");
+
+            task.setPriority(1);
 
             task.setStatus(
                     todo.isCompleted()
