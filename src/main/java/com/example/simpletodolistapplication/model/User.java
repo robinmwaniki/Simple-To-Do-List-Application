@@ -39,7 +39,7 @@ public class User {
 
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters")
-    @JsonIgnore // never serialize the password back to clients
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
