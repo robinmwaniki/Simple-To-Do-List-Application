@@ -1,5 +1,4 @@
 package com.example.simpletodolistapplication.controller;
-
 import com.example.simpletodolistapplication.model.Task;
 import com.example.simpletodolistapplication.model.Status;
 import com.example.simpletodolistapplication.service.TaskService;
@@ -41,9 +40,7 @@ public class TaskController {
     }
 
     @GetMapping("/category/{categoryId}/status/{status}")
-    public ResponseEntity<List<Task>> getTasksByCategoryAndStatus(
-            @PathVariable Long categoryId,
-            @PathVariable Status status) {
+    public ResponseEntity<List<Task>> getTasksByCategoryAndStatus(@PathVariable Long categoryId, @PathVariable Status status) {
         return ResponseEntity.ok(taskService.getTasksByCategoryAndStatus(categoryId, status));
     }
 
@@ -64,9 +61,7 @@ public class TaskController {
     }
 
     @PostMapping("/with-category/{categoryId}")
-    public ResponseEntity<Task> createTaskWithCategory(
-            @Valid @RequestBody Task task,
-            @PathVariable Long categoryId) {
+    public ResponseEntity<Task> createTaskWithCategory(@Valid @RequestBody Task task, @PathVariable Long categoryId) {
         try {
             Task createdTask = taskService.createTask(task, categoryId);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
@@ -84,8 +79,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long id,
-                                           @Valid @RequestBody Task task) {
+    public ResponseEntity<Task> updateTask(@PathVariable Long id, @Valid @RequestBody Task task) {
         try {
             Task updatedTask = taskService.updateTask(id, task);
             return ResponseEntity.ok(updatedTask);
@@ -105,8 +99,7 @@ public class TaskController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Task> updateTaskStatus(@PathVariable Long id,
-                                                 @RequestBody Status status) {
+    public ResponseEntity<Task> updateTaskStatus(@PathVariable Long id, @RequestBody Status status) {
         try {
             Task updatedTask = taskService.updateTaskStatus(id, status);
             return ResponseEntity.ok(updatedTask);
@@ -116,8 +109,7 @@ public class TaskController {
     }
 
     @PatchMapping("/{taskId}/assign-category/{categoryId}")
-    public ResponseEntity<Task> assignCategoryToTask(@PathVariable Long taskId,
-                                                     @PathVariable Long categoryId) {
+    public ResponseEntity<Task> assignCategoryToTask(@PathVariable Long taskId, @PathVariable Long categoryId) {
         try {
             Task updatedTask = taskService.assignCategory(taskId, categoryId);
             return ResponseEntity.ok(updatedTask);
@@ -137,9 +129,7 @@ public class TaskController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Task>> searchTasks(@RequestParam(required = false) String title,
-                                                  @RequestParam(required = false) Status status,
-                                                  @RequestParam(required = false) Long categoryId) {
+    public ResponseEntity<List<Task>> searchTasks(@RequestParam(required = false) String title, @RequestParam(required = false) Status status, @RequestParam(required = false) Long categoryId) {
         if (title != null) {
 
             return ResponseEntity.ok(taskService.getAllTasks());
@@ -153,6 +143,7 @@ public class TaskController {
             return ResponseEntity.ok(taskService.getAllTasks());
         }
     }
+    //rest client controller
     @PostMapping("/import-restclient")
     public ResponseEntity<List<Task>> importTasksUsingRestClient() {
 

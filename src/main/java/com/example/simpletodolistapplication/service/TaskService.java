@@ -131,7 +131,7 @@ public class TaskService {
             Task task = new Task();
 
             task.setTitle(todo.getTitle());
-            task.setDescription("imported using rest template");
+            task.setDescription("imported usng rest template");
 
             task.setPriority(2);
 

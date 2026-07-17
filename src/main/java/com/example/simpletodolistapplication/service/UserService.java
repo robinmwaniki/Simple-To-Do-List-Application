@@ -84,7 +84,4 @@ public class UserService {
                 .map(userAssembler::toDTO);
     }
 
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
 }
